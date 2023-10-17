@@ -1,3 +1,11 @@
+/*
+ * @Author: gongjun136 gongjun136@gmail.com
+ * @Date: 2023-10-17 18:51:11
+ * @LastEditors: gongjun136 gongjun136@gmail.com
+ * @LastEditTime: 2023-10-17 19:14:16
+ * @FilePath: /test/CSF_test/csf_filter.cpp
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -8,7 +16,7 @@ int main(int argc, char **argv)
 {
     if (argc != 3)
     {
-        std::cerr << "Usage: ./convert_pcd_to_txt <input.pcd> <output.txt>" << std::endl;
+        std::cerr << "Usage: ./convert_pcd_to_txt <input.pcd> <output.pcd>" << std::endl;
         return -1;
     }
 
@@ -37,6 +45,8 @@ int main(int argc, char **argv)
         csfPoint.z = point.z;
         pointCloud.push_back(csfPoint);
     }
+    // Start timing here
+    auto start_time = std::chrono::high_resolution_clock::now();
 
     // Create and set up the CSF object
     CSF csf_filter;
@@ -61,6 +71,11 @@ int main(int argc, char **argv)
     }
     filteredCloud->width = filteredCloud->points.size();
     filteredCloud->height = 1;
+
+    // End timing here
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+    std::cout << "Total execution time: " << duration << " ms" << std::endl;
 
     // Save the filtered point cloud to a new PCD file
     pcl::io::savePCDFileASCII(argv[2], *filteredCloud);
